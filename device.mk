@@ -16,7 +16,7 @@
 
 include device/google/gs-common/device.mk
 include device/google/gs-common/gs_watchdogd/watchdog.mk
-include device/google/gs-common/ramdump/ramdump.mk
+include device/google/gs-common/ramdump_and_coredump/ramdump_and_coredump.mk
 include device/google/gs-common/soc/soc.mk
 include device/google/gs-common/modem/modem.mk
 include device/google/gs-common/aoc/aoc.mk
@@ -217,10 +217,19 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.vendor.usb.displayport.enabled=1
 endif
 
+PRODUCT_PROPERTY_OVERRIDES += \
+	persist.sys.hdcp_checking=always
+
 USE_LASSEN_OEMHOOK := true
+# The "power-anomaly-sitril" is added into PRODUCT_SOONG_NAMESPACES when
+# $(USE_LASSEN_OEMHOOK) is true and $(BOARD_WITHOUT_RADIO) is not true.
+ifneq ($(BOARD_WITHOUT_RADIO),true)
+    PRODUCT_SOONG_NAMESPACES += vendor/google/tools/power-anomaly-sitril
+endif
 
 # Use for GRIL
 USES_LASSEN_MODEM := true
+$(call soong_config_set, vendor_ril_google_feature, use_lassen_modem, true)
 
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
@@ -287,9 +296,8 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.vulkan.version-1_3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml \
 	frameworks/native/data/etc/android.hardware.vulkan.level-1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
 	frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute.xml \
-	frameworks/native/data/etc/android.software.contextualsearch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.contextualsearch.xml \
-	frameworks/native/data/etc/android.software.vulkan.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
-	frameworks/native/data/etc/android.software.opengles.deqp.level-2023-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml
+	frameworks/native/data/etc/android.software.vulkan.deqp.level-2024-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
+	frameworks/native/data/etc/android.software.opengles.deqp.level-2024-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml
 
 #endif
 
@@ -349,7 +357,19 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/ueventd.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
 
 PRODUCT_COPY_FILES += \
-	device/google/zuma/conf/init.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.rc
+	device/google/zuma/conf/init.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.rc \
+	device/google/zuma/conf/init.persist.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.persist.rc
+
+ifeq (true,$(PRODUCT_16K_DEVELOPER_OPTION))
+PRODUCT_COPY_FILES += \
+	device/google/zuma/conf/init.efs.16k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc \
+	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.efs.from_data:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.efs.from_data \
+
+PRODUCT_PACKAGES += copy_efs_files_to_data
+else
+PRODUCT_COPY_FILES += \
+	device/google/zuma/conf/init.efs.4k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc
+endif
 
 ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_COPY_FILES += \
@@ -363,6 +383,14 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.recovery.device.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.zuma.rc
 
 # Fstab files
+ifeq (ext4,$(TARGET_RW_FILE_SYSTEM_TYPE))
+PRODUCT_SOONG_NAMESPACES += \
+        device/google/zuma/conf/ext4
+else
+PRODUCT_SOONG_NAMESPACES += \
+        device/google/zuma/conf/f2fs
+endif
+
 PRODUCT_PACKAGES += \
 	fstab.zuma \
 	fstab.zuma.vendor_ramdisk \
@@ -371,7 +399,9 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
 	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.persist:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.persist \
-	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.modem:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.modem
+	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.modem:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.modem \
+	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.efs:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.efs
+
 
 # Shell scripts
 PRODUCT_PACKAGES += \
@@ -790,6 +820,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	debug.stagefright.c2inputsurface=-1 \
 
+PRODUCT_PROPERTY_OVERRIDES += media.c2.hal.selection=aidl
+
 # 2. OpenMAX IL
 PRODUCT_COPY_FILES += \
 	device/google/zuma/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
@@ -1087,7 +1119,9 @@ PRODUCT_SOONG_NAMESPACES += \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/darwinn_logging_service \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/nnapi_stable_aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/aidl \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/hal
+	vendor/google_devices/zuma/proprietary/gchips/tpu/hal \
+	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/api \
+	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/service
 # TPU firmware
 PRODUCT_PACKAGES += edgetpu-rio.fw
 
@@ -1138,9 +1172,6 @@ include hardware/google/pixel/PixelLogger/PixelLogger.mk
 else
 BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/logger_app
 endif
-
-# sscoredump
-include hardware/google/pixel/sscoredump/device.mk
 
 # RadioExt Version
 USES_RADIOEXT_V1_6 = true
