@@ -257,6 +257,7 @@ on init
     chown system system /sys/class/power_supply/wireless/device/version
     chown system system /sys/class/power_supply/wireless/device/features
     chown system system /sys/class/power_supply/wireless/device/authtype
+    chown system system /sys/class/power_supply/wireless/device/authstart
 
     # Adaptive charge
     chown system system /sys/class/power_supply/battery/charge_deadline
@@ -605,12 +606,6 @@ on property:persist.vendor.radio.no_modem_board=1
 
 on fs
     mount_all --early
-    restorecon_recursive /mnt/vendor/efs
-    chown radio system /mnt/vendor/efs
-    restorecon_recursive /mnt/vendor/efs_backup
-    chown radio system /mnt/vendor/efs_backup
-    restorecon_recursive /mnt/vendor/modem_userdata
-    chown radio system /mnt/vendor/modem_userdata
 
     # Mount modem partition
     mount_all /vendor/etc/fstab.modem --early

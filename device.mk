@@ -26,6 +26,7 @@ include device/google/gs-common/storage/storage.mk
 include device/google/gs-common/thermal/dump/thermal.mk
 include device/google/gs-common/thermal/thermal_hal/device.mk
 include device/google/gs-common/performance/perf.mk
+include device/google/gs-common/power/power.mk
 include device/google/gs-common/pixel_metrics/pixel_metrics.mk
 include device/google/gs-common/soc/freq.mk
 include device/google/gs-common/gps/dump/log.mk
@@ -43,6 +44,7 @@ include device/google/gs-common/misc_writer/misc_writer.mk
 include device/google/gs-common/gyotaku_app/gyotaku.mk
 include device/google/gs-common/bootctrl/bootctrl_aidl.mk
 include device/google/gs-common/betterbug/betterbug.mk
+include device/google/gs-common/fingerprint/fingerprint.mk
 
 include device/google/zuma/dumpstate/item.mk
 
@@ -360,7 +362,7 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.zuma.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.rc \
 	device/google/zuma/conf/init.persist.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.persist.rc
 
-ifeq (true,$(PRODUCT_16K_DEVELOPER_OPTION))
+ifeq (true,$(filter $(PRODUCT_BOOTS_16K) $(PRODUCT_16K_DEVELOPER_OPTION),true))
 PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.efs.16k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc \
 	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.efs.from_data:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.efs.from_data \
