@@ -469,8 +469,6 @@ PRODUCT_COPY_FILES += \
 ## Enable the CHRE Daemon
 CHRE_USF_DAEMON_ENABLED := false
 CHRE_DEDICATED_TRANSPORT_CHANNEL_ENABLED := true
-PRODUCT_PACKAGES += \
-	preloaded_nanoapps.json
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -588,6 +586,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_exclusive_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.hw_burst_min_usec=2000
+
+# Set util_clamp_min for s/w spatializer
+PRODUCT_PROPERTY_OVERRIDES += audio.spatializer.effect.util_clamp_min=300
 
 # Calliope firmware overwrite
 #PRODUCT_COPY_FILES += \
