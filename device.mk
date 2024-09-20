@@ -1160,7 +1160,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/nnapi_stable_aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/hal \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/api \
+	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/tachyon_apis \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/service
 # TPU firmware
 PRODUCT_PACKAGES += edgetpu-rio.fw
