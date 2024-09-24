@@ -3,6 +3,7 @@ persist.vendor.testing_battery_profile     u:object_r:vendor_battery_profile_pro
 
 # NFC
 persist.vendor.nfc.                        u:object_r:vendor_nfc_prop:s0
+persist.vendor.nfc.antenna.                u:object_r:vendor_nfc_antenna_prop:s0
 
 # SecureElement
 persist.vendor.se.                         u:object_r:vendor_secure_element_prop:s0
