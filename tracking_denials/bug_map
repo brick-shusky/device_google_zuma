@@ -15,6 +15,8 @@ modem_svc_sit hal_radioext_default process b/364446415
 modem_svc_sit modem_ml_svc_sit file b/360060606
 modem_svc_sit modem_ml_svc_sit file b/360060992
 mtectrl unlabeled dir b/264483752
+pixelstats_vendor block_device dir b/369540673
+pixelstats_vendor block_device dir b/369540836
 ramdump ramdump capability b/369475700
 shell sysfs_net file b/330081782
 ssr_detector_app default_prop file b/340722729
