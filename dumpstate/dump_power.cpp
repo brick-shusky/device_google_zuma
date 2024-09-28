@@ -307,7 +307,7 @@ void dumpPdEngine() {
     const char* pdEngine [][2] {
             {"Logbuffer TCPC", "/dev/logbuffer_usbpd"},
             {"PPS-google_cpm", "/dev/logbuffer_cpm"},
-            {"PPS-dc", "/dev/logbuffer_pca9468"},
+            {"PPS-dc", "/dev/logbuffer_dc_mains"},
     };
 
     for (const auto &row : pdEngine) {

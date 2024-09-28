@@ -531,10 +531,9 @@ on early-boot
     chown system system /dev/logbuffer_tcpm
     chown system system /dev/logbuffer_usbpd
     chown system system /dev/logbuffer_wireless
-    chown system system /dev/logbuffer_pca9468
+    chown system system /dev/logbuffer_dc_mains
     chown system system /dev/logbuffer_cpm
     chown system system /dev/logbuffer_wc68
-    chown system system /dev/logbuffer_ln8411
     chown system system /dev/logbuffer_pcie0
     chown system system /dev/logbuffer_pcie1
     chown system system /dev/logbuffer_bd
