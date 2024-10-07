@@ -80,6 +80,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	device/google/zuma \
 	device/google/zuma/powerstats \
 	vendor/google_devices/common/chre/host/hal \
+	vendor/google_devices/zuma/proprietary/debugpolicy \
 	vendor/google/whitechapel/tools \
 	vendor/google/interfaces \
 	vendor/google_nos/host/android \
@@ -94,11 +95,6 @@ TRUSTY_KEYMINT_IMPL := rust
 ifeq ($(RELEASE_AVF_ENABLE_LLPVM_CHANGES),true)
 	# Set the environment variable to enable the Secretkeeper HAL service.
 	SECRETKEEPER_ENABLED := true
-	# TODO(b/341708664): Enable Secretkeeper unconditionally once AOSP targets are built with
-	# compatible bootloader (24Q3+).
-	ifneq (,$(filter aosp_%,$(TARGET_PRODUCT)))
-		SECRETKEEPER_ENABLED := false
-	endif
 endif
 
 # OEM Unlock reporting
@@ -224,7 +220,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 endif
 
 PRODUCT_PROPERTY_OVERRIDES += \
-	persist.sys.hdcp_checking=always
+	persist.sys.hdcp_checking=drm-only
 
 USE_LASSEN_OEMHOOK := true
 # The "power-anomaly-sitril" is added into PRODUCT_SOONG_NAMESPACES when
@@ -241,6 +237,8 @@ $(call soong_config_set, vendor_ril_google_feature, use_lassen_modem, true)
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
 USE_GOOGLE_CARRIER_SETTINGS := true
+# GoogleDialer in PDK build with "USES_GOOGLE_DIALER_CARRIER_SETTINGS=true"
+PRODUCT_SOONG_NAMESPACES += vendor/google_devices/zuma/proprietary/GoogleDialer
 endif
 
 ifeq ($(USES_GOOGLE_PREBUILT_MODEM_SVC),true)
@@ -402,6 +400,14 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.freq.userdebug.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.freq.userdebug.rc
 endif
 
+ifneq (,$(filter 5.%, $(TARGET_LINUX_KERNEL_VERSION)))
+PRODUCT_COPY_FILES += \
+	device/google/zuma/storage/5.15/init.zuma.storage.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.storage.rc
+else
+PRODUCT_COPY_FILES += \
+	device/google/zuma/storage/6.1/init.zuma.storage.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.storage.rc
+endif
+
 # Recovery files
 PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.recovery.device.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.zuma.rc
@@ -441,9 +447,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_HOST_PACKAGES += \
 	mkdtimg
 
-PRODUCT_PACKAGES += \
-	messaging
-
 # CHRE
 ## Tools
 ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
@@ -461,8 +464,6 @@ PRODUCT_COPY_FILES += \
 ## Enable the CHRE Daemon
 CHRE_USF_DAEMON_ENABLED := false
 CHRE_DEDICATED_TRANSPORT_CHANNEL_ENABLED := true
-PRODUCT_PACKAGES += \
-	preloaded_nanoapps.json
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -580,6 +581,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_exclusive_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.hw_burst_min_usec=2000
+
+# Set util_clamp_min for s/w spatializer
+PRODUCT_PROPERTY_OVERRIDES += audio.spatializer.effect.util_clamp_min=300
 
 # Calliope firmware overwrite
 #PRODUCT_COPY_FILES += \
@@ -1151,7 +1155,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/nnapi_stable_aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/hal \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/api \
+	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/tachyon_apis \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/service
 # TPU firmware
 PRODUCT_PACKAGES += edgetpu-rio.fw
