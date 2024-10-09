@@ -1090,26 +1090,30 @@ void queryVersionHelper(android::hardware::usb::Usb *usb,
 
     pthread_mutex_lock(&usb->mLock);
     status = getPortStatusHelper(usb, currentPortStatus);
-    queryMoistureDetectionStatus(currentPortStatus);
-    queryPowerTransferStatus(currentPortStatus);
-    queryNonCompliantChargerStatus(currentPortStatus);
-    queryUsbDataSession(usb, currentPortStatus);
-    pthread_mutex_lock(&usb->mDisplayPortLock);
-    if (!usb->mDisplayPortFirstSetupDone &&
-        usb->getDisplayPortUsbPathHelper(&displayPortUsbPath) == Status::SUCCESS) {
+    if (status == Status::SUCCESS && currentPortStatus->size() > 0) {
+        queryMoistureDetectionStatus(currentPortStatus);
+        queryPowerTransferStatus(currentPortStatus);
+        queryNonCompliantChargerStatus(currentPortStatus);
+        queryUsbDataSession(usb, currentPortStatus);
+        pthread_mutex_lock(&usb->mDisplayPortLock);
+        if (!usb->mDisplayPortFirstSetupDone &&
+            usb->getDisplayPortUsbPathHelper(&displayPortUsbPath) == Status::SUCCESS) {
 
-        ALOGI("usbdp: boot with display connected or usb hal restarted");
-        usb->setupDisplayPortPoll();
-    }
-    pthread_mutex_unlock(&usb->mDisplayPortLock);
-    queryDisplayPortStatus(usb, currentPortStatus);
-    if (usb->mCallback != NULL) {
-        ScopedAStatus ret = usb->mCallback->notifyPortStatusChange(*currentPortStatus,
-            status);
-        if (!ret.isOk())
-            ALOGE("queryPortStatus error %s", ret.getDescription().c_str());
+            ALOGI("usbdp: boot with display connected or usb hal restarted");
+            usb->setupDisplayPortPoll();
+        }
+        pthread_mutex_unlock(&usb->mDisplayPortLock);
+        queryDisplayPortStatus(usb, currentPortStatus);
+        if (usb->mCallback != NULL) {
+            ScopedAStatus ret = usb->mCallback->notifyPortStatusChange(*currentPortStatus,
+                status);
+            if (!ret.isOk())
+                ALOGE("queryPortStatus error %s", ret.getDescription().c_str());
+        } else {
+            ALOGI("Notifying userspace skipped. Callback is NULL");
+        }
     } else {
-        ALOGI("Notifying userspace skipped. Callback is NULL");
+        ALOGI("%s skipped. currentPortStatus is empty", __func__);
     }
     pthread_mutex_unlock(&usb->mLock);
 }
