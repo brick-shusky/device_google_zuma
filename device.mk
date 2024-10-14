@@ -1014,8 +1014,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
 
 ifneq ($(BOARD_WITHOUT_RADIO),true)
-# modem_svc_sit daemon
-PRODUCT_PACKAGES += modem_svc_sit
+
+# Use Lassen specifc Shared Modem Platform
+SHARED_MODEM_PLATFORM_VENDOR := lassen
+
+# Shared Modem Platform
+include device/google/gs-common/modem/shared_modem_platform/shared_modem_platform.mk
 
 # modem_ml_svc_sit daemon
 PRODUCT_PACKAGES += modem_ml_svc_sit
