@@ -4,9 +4,6 @@ dumpstate app_zygote process b/288049050
 edgetpu_vendor_server shell_data_file dir b/369475225
 edgetpu_vendor_server shell_data_file dir b/369475363
 hal_bluetooth_btlinux vendor_default_prop property_service b/350832030
-hal_camera_default cgroup_desc_file file b/372348756
-hal_graphics_composer_default cgroup_desc_file file b/372348383
-hal_power_default cgroup_desc_file file b/372348502
 hal_radioext_default radio_vendor_data_file file b/312590044
 hal_vibrator_default default_android_service service_manager b/314054292
 hal_vibrator_default default_android_service service_manager b/367943515
