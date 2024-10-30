@@ -24,7 +24,6 @@ import org.junit.After;
 
 import android.platform.test.annotations.AppModeFull;
 
-import com.android.tradefed.device.DeviceNotAvailableException;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
 import com.android.tradefed.testtype.junit4.DeviceTestRunOptions;
@@ -60,25 +59,24 @@ public class CopyEfsTest extends BaseHostJUnit4Test {
         testDumpF2FS("persist");
     }
 
-    private CommandResult RunAndCheckAdbCmd(String cmd) throws DeviceNotAvailableException {
-        CommandResult r = getDevice().executeShellV2Command(cmd);
-        assertEquals("Failed to run " + cmd, r.getExitCode(), Integer.valueOf(0));
-        return r;
-    }
-
     private void testDumpF2FS(String name) throws Exception {
-        RunAndCheckAdbCmd(String.format("cp /dev/block/by-name/%s /data/local/tmp/efs_test/%s.img", name, name));
+        getDevice().executeShellCommand(String.format("cp /dev/block/by-name/%s /data/local/tmp/efs_test/%s.img", name, name));
 
         // The device was mounted r/w. To get a clean image, we run fsck, and then mount to allow mount time fixes to happen.
         // We can then dump and mount read only to ensure the contents should be the same.
-        RunAndCheckAdbCmd(String.format("fsck.f2fs -f /data/local/tmp/efs_test/%s.img", name));
-        RunAndCheckAdbCmd(String.format("mount /data/local/tmp/efs_test/%s.img /data/local/tmp/efs_test/mnt", name));
-        RunAndCheckAdbCmd("umount /data/local/tmp/efs_test/mnt");
+        getDevice().executeShellCommand(String.format("fsck.f2fs -f /data/local/tmp/efs_test/%s.img", name, name));
+        CommandResult r = getDevice().executeShellV2Command(String.format("mount /data/local/tmp/efs_test/%s.img /data/local/tmp/efs_test/mnt", name));
+        assertEquals(r.getExitCode().intValue(), 0);
+        r = getDevice().executeShellV2Command("umount /data/local/tmp/efs_test/mnt");
+        assertEquals(r.getExitCode().intValue(), 0);
 
-        RunAndCheckAdbCmd(String.format("dump.f2fs -rfPLo /data/local/tmp/efs_test/dump /data/local/tmp/efs_test/%s.img", name));
-        RunAndCheckAdbCmd(String.format("mount -r /data/local/tmp/efs_test/%s.img /data/local/tmp/efs_test/mnt", name));
+        r = getDevice().executeShellV2Command(String.format("dump.f2fs -rfPLo /data/local/tmp/efs_test/dump /data/local/tmp/efs_test/%s.img", name));
+        assertEquals(r.getExitCode().intValue(), 0);
+        r = getDevice().executeShellV2Command(String.format("mount -r /data/local/tmp/efs_test/%s.img /data/local/tmp/efs_test/mnt", name));
+        assertEquals(r.getExitCode().intValue(), 0);
 
-        CommandResult r = RunAndCheckAdbCmd("diff -rq --no-dereference /data/local/tmp/efs_test/mnt /data/local/tmp/efs_test/dump");
+        r = getDevice().executeShellV2Command("diff -rq --no-dereference /data/local/tmp/efs_test/mnt /data/local/tmp/efs_test/dump");
+        assertEquals(r.getExitCode().intValue(), 0);
         assertEquals(r.getStdout(), "");
 
         // Remove timestamps because ls on device does not support --time-style. This is AWKward.
@@ -88,9 +86,11 @@ public class CopyEfsTest extends BaseHostJUnit4Test {
         // So we can check for -> in the second to last spot to determine what position the timestamp ends at
         // Remove totals because on disk block usage may change depending on filesystem
         String ls_cmd = "cd /data/local/tmp/efs_test/%s;ls -AlnR . | awk {'if (NF>3 && $(NF-1) == \"->\") end=3; else end=1; for(i=6;i<=NF-end && i>0;i++)$i=\"\";if ($1 != \"total\"){print $0}'}";
-        CommandResult mnt_ls = RunAndCheckAdbCmd(String.format(ls_cmd, "mnt"));
-        CommandResult dump_ls = RunAndCheckAdbCmd(String.format(ls_cmd, "dump"));
-        assertEquals(mnt_ls.getStdout(), dump_ls.getStdout());
+        String mnt_ls = getDevice().executeShellCommand(String.format(ls_cmd, "mnt"));
+        assertEquals(getDevice().executeShellCommand("echo $?"), "0\n");
+        String dump_ls = getDevice().executeShellCommand(String.format(ls_cmd, "dump"));
+        assertEquals(getDevice().executeShellCommand("echo $?"), "0\n");
+        assertEquals(mnt_ls, dump_ls);
 
         getDevice().executeShellCommand("umount /data/local/tmp/efs_test/mnt");
         getDevice().executeShellCommand("rm -rf /data/local/tmp/efs_test/dump/*");
