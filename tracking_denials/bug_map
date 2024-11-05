@@ -4,6 +4,7 @@ dumpstate app_zygote process b/288049050
 edgetpu_vendor_server shell_data_file dir b/369475225
 edgetpu_vendor_server shell_data_file dir b/369475363
 hal_bluetooth_btlinux vendor_default_prop property_service b/350832030
+hal_fingerprint_default default_android_service service_manager b/376602341
 hal_radioext_default radio_vendor_data_file file b/312590044
 hal_vibrator_default default_android_service service_manager b/314054292
 hal_vibrator_default default_android_service service_manager b/367943515
@@ -17,6 +18,8 @@ modem_svc_sit modem_ml_svc_sit file b/360060992
 mtectrl unlabeled dir b/264483752
 pixelstats_vendor block_device dir b/369540673
 pixelstats_vendor block_device dir b/369540836
+platform_app vendor_fw_file dir b/372121912
+platform_app vendor_rild_prop file b/372121912
 ramdump ramdump capability b/369475700
 shell sysfs_net file b/330081782
 ssr_detector_app default_prop file b/340722729
