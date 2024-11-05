@@ -38,9 +38,17 @@ BOARD_KERNEL_CMDLINE += rcupdate.rcu_expedited=1 rcu_nocbs=all rcutree.enable_rc
 BOARD_KERNEL_CMDLINE += swiotlb=1024
 BOARD_KERNEL_CMDLINE += cgroup.memory=nokmem
 BOARD_KERNEL_CMDLINE += sysctl.kernel.sched_pelt_multiplier=4
+
 ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
+ifneq (,$(filter eng,$(TARGET_BUILD_VARIANT)))
 BOARD_KERNEL_CMDLINE += kasan=off
+BOARD_KERNEL_CMDLINE += bootloader.pixel.MTE_FORCE_ON
+ifeq ($(filter memtag_heap,$(SANITIZE_TARGET)),)
+SANITIZE_TARGET := $(strip $(SANITIZE_TARGET) memtag_heap)
 endif
+endif
+endif
+
 BOARD_BOOTCONFIG += androidboot.boot_devices=13200000.ufs
 
 TARGET_NO_BOOTLOADER := true
@@ -277,6 +285,8 @@ BOARD_USES_EXYNOS_AFBC_FEATURE := true
 
 BOARD_LIBACRYL_DEFAULT_COMPOSITOR := fimg2d_zuma
 BOARD_LIBACRYL_G2D_HDR_PLUGIN := libacryl_hdr_plugin
+$(call soong_config_set,acryl,libacryl_g2d_hdr_plugin,//hardware/google/graphics/zuma/libacryl_plugins:libacryl_hdr_plugin)
+$(call soong_config_set,acryl,libacryl_c_include,hardware/google/graphics/$(TARGET_BOARD_PLATFORM)/libcap)
 
 # HWCServices
 BOARD_USES_HWC_SERVICES := true

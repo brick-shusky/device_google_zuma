@@ -287,6 +287,9 @@
     <!-- Enable Zram writeback feature to allow unused pages in zram be written to flash. -->
     <bool name="config_zramWriteback">true</bool>
 
+    <!-- the number of the max cached processes in the system. -->
+    <integer name="config_customizedMaxCachedProcesses">1024</integer>
+
     <!-- Boolean indicating if restoring network selection should be skipped -->
     <!-- The restoring is handled by modem if it is true -->
     <bool translatable="false" name="skip_restoring_network_selection">true</bool>
@@ -318,14 +321,4 @@
 
     <!-- Pre-scale volume at volume step 3 for Absolute Volume -->
     <fraction name="config_prescaleAbsoluteVolume_index3">100%</fraction>
-
-    <!-- User activity timeout: Maximum screen dim duration in milliseconds. -->
-    <integer name="config_maximumScreenDimDuration">20000</integer>
-
-    <!-- User activity timeout: Maximum screen dim duration as a percentage of screen off timeout.
-    -->
-    <fraction name="config_maximumScreenDimRatio">33%</fraction>
-
-    <!-- Whether to enable usb state update via udc sysfs. -->
-    <bool name="config_enableUdcSysfsUsbStateUpdate">true</bool>
 </resources>

@@ -186,7 +186,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
 	bluetooth.profile.asha.central.enabled?=true \
 	bluetooth.profile.a2dp.source.enabled?=true \
 	bluetooth.profile.avrcp.target.enabled?=true \
-	bluetooth.profile.bap.unicast.server.enabled?=true \
+	bluetooth.profile.bap.unicast.client.enabled?=true \
 	bluetooth.profile.bas.client.enabled?=true \
 	bluetooth.profile.csip.set_coordinator.enabled?=true \
 	bluetooth.profile.gatt.enabled?=true \
@@ -201,8 +201,8 @@ PRODUCT_PRODUCT_PROPERTIES += \
 	bluetooth.profile.pan.panu.enabled?=true \
 	bluetooth.profile.pbap.server.enabled?=true \
 	bluetooth.profile.sap.server.enabled?=true \
-	bluetooth.profile.tbs.server.enabled?=true \
-	bluetooth.profile.vc.server.enabled?=true
+	bluetooth.profile.ccp.server.enabled?=true \
+	bluetooth.profile.vcp.controller.enabled?=true
 
 # Carrier configuration default location
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -1014,8 +1014,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
 
 ifneq ($(BOARD_WITHOUT_RADIO),true)
-# modem_svc_sit daemon
-PRODUCT_PACKAGES += modem_svc_sit
+
+# Use Lassen specifc Shared Modem Platform
+SHARED_MODEM_PLATFORM_VENDOR := lassen
+
+# Shared Modem Platform
+include device/google/gs-common/modem/shared_modem_platform/shared_modem_platform.mk
 
 # modem_ml_svc_sit daemon
 PRODUCT_PACKAGES += modem_ml_svc_sit
