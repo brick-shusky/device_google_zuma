@@ -213,6 +213,12 @@ BOARD_USE_BLOB_ALLOCATOR := false
 BOARD_SUPPORT_MFC_ENC_BT2020 := true
 BOARD_SUPPORT_FLEXIBLE_P010 := true
 BOARD_SUPPORT_MFC_VERSION := 1660
+$(call soong_config_set,video_codec,target_soc_name,$(TARGET_SOC_NAME))
+$(call soong_config_set_bool,video_codec,board_use_codec2_hidl_1_2,$(BOARD_USE_CODEC2_HIDL_1_2))
+$(call soong_config_set_bool,video_codec,board_support_mfc_enc_bt2020,$(BOARD_SUPPORT_MFC_ENC_BT2020))
+$(call soong_config_set_bool,video_codec,board_support_flexible_p010,$(BOARD_SUPPORT_FLEXIBLE_P010))
+$(call soong_config_set_bool,video_codec,board_use_codec2_aidl,$(if $(BOARD_USE_CODEC2_AIDL),true,false))
+$(call soong_config_set,video_codec,board_support_mfc_version,$(BOARD_SUPPORT_MFC_VERSION))
 ########################
 
 BOARD_SUPER_PARTITION_SIZE := 8531214336
