@@ -206,36 +206,12 @@ void dumpMaxFg() {
             {"maxfg_monitor logbuffer", "/dev/logbuffer_maxfg_monitor"},
     };
 
-    const char *maxfgFlip [][2] = {
-            {"Power supply property maxfg_base", "/sys/class/power_supply/maxfg_base/uevent"},
-            {"Power supply property maxfg_flip", "/sys/class/power_supply/maxfg_flip/uevent"},
-            {"maxfg_base registers", "/sys/class/power_supply/maxfg_base/registers_dump"},
-            {"maxfg_secondary registers", "/sys/class/power_supply/maxfg_secondary/registers_dump"},
-            {"m5_state", "/sys/class/power_supply/maxfg_base/m5_model_state"},
-            {"maxfg_base", "/dev/logbuffer_maxfg_base"},
-            {"maxfg_flip", "/dev/logbuffer_maxfg_flip"},
-            {"maxfg_base", "/dev/logbuffer_maxfg_base_monitor"},
-            {"maxfg_flip", "/dev/logbuffer_maxfg_flip_monitor"},
-    };
-
-    const char *maxfgHistoryName = "Maxim FG History";
-    const char *maxfgHistoryDir = "/dev/maxfg_history";
-
     std::string content;
-
 
     if (isValidDir(maxfgLoc)) {
         for (const auto &row : maxfg) {
             dumpFileContent(row[0], row[1]);
         }
-    } else {
-        for (const auto &row : maxfgFlip) {
-            dumpFileContent(row[0], row[1]);
-        }
-    }
-
-    if (isValidFile(maxfgHistoryDir)) {
-        dumpFileContent(maxfgHistoryName, maxfgHistoryDir);
     }
 }
 
@@ -306,8 +282,9 @@ void dumpTcpc() {
 void dumpPdEngine() {
     const char* pdEngine [][2] {
             {"Logbuffer TCPC", "/dev/logbuffer_usbpd"},
-            {"PPS-google_cpm", "/dev/logbuffer_cpm"},
-            {"PPS-dc", "/dev/logbuffer_dc_mains"},
+            {"PPS-google_cpm logbuffer", "/dev/logbuffer_cpm"},
+            {"PPS-pca9468 logbuffer", "/dev/logbuffer_pca9468"},
+            {"PPS-dc_mains logbuffer", "/dev/logbuffer_dc_mains"},
     };
 
     for (const auto &row : pdEngine) {
@@ -330,15 +307,6 @@ void dumpWc68() {
 
     if (isValidFile(wc68File)) {
         dumpFileContent(wc68Title, wc68File);
-    }
-}
-
-void dumpLn8411() {
-    const char* ln8411Title = "LN8411";
-    const char* ln8411File = "/dev/logbuffer_ln8411";
-
-    if (isValidFile(ln8411File)) {
-        dumpFileContent(ln8411Title, ln8411File);
     }
 }
 
@@ -480,7 +448,6 @@ void dumpChgUserDebug() {
     const std::string debugfs = "/d/";
     const char *maxFgDir = "/d/maxfg";
     const char *maxFgStrMatch = "maxfg";
-    const char *maxFg77779StrMatch = "max77779fg";
     const char *chgTblName = "Charging table dump";
     const char *chgTblDir = "/d/google_battery/chg_raw_profile";
 
@@ -488,16 +455,6 @@ void dumpChgUserDebug() {
             "fg_model",
             "algo_ver",
             "model_ok",
-            "registers",
-            "nv_registers",
-    };
-
-    const char *max77779FgInfo [] {
-            "fg_model",
-            "algo_ver",
-            "model_ok",
-            "registers",
-            "debug_registers",
     };
 
     if (isUserBuild())
@@ -508,10 +465,6 @@ void dumpChgUserDebug() {
     if (isValidDir(maxFgDir)) {
         for (auto & directory : maxFgInfo) {
             printValuesOfDirectory(directory, debugfs, maxFgStrMatch);
-        }
-    } else {
-        for (auto & directory : max77779FgInfo) {
-            printValuesOfDirectory(directory, debugfs, maxFg77779StrMatch);
         }
     }
 }
@@ -980,7 +933,6 @@ int main() {
     dumpPdEngine();
     dumpEusbRepeater();
     dumpWc68();
-    dumpLn8411();
     dumpBatteryHealth();
     dumpBatteryDefend();
     dumpChg();
