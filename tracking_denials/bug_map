@@ -1,3 +1,4 @@
+bluetooth audio_config_prop file b/379245855
 dump_modem sscoredump_vendor_data_coredump_file dir b/361725982
 dump_modem sscoredump_vendor_data_logcat_file dir b/361725982
 dumpstate app_zygote process b/288049050
@@ -21,6 +22,8 @@ pixelstats_vendor block_device dir b/369540673
 pixelstats_vendor block_device dir b/369540836
 platform_app vendor_fw_file dir b/372121912
 platform_app vendor_rild_prop file b/372121912
+priv_app audio_config_prop file b/379246064
+radio audio_config_prop file b/379245771
 ramdump ramdump capability b/369475700
 shell sysfs_net file b/330081782
 ssr_detector_app default_prop file b/340722729
@@ -28,6 +31,7 @@ system_server sysfs_batteryinfo file b/294967729
 system_server vendor_default_prop file b/366116488
 system_suspend sysfs_batteryinfo dir b/317316633
 system_suspend sysfs_touch_gti dir b/350832258
+untrusted_app audio_config_prop file b/379245754
 vendor_init default_prop file b/315104235
 vendor_init default_prop file b/315104803
 vendor_init default_prop file b/323087197
