@@ -75,6 +75,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	hardware/google/gchips/gralloc4 \
 	hardware/google/graphics/common \
 	hardware/google/graphics/zuma \
+	hardware/google/graphics/zuma/libhwc2.1 \
 	hardware/google/interfaces \
 	hardware/google/pixel \
 	device/google/zuma \
