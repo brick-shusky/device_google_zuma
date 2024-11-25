@@ -20,6 +20,7 @@ modem_svc_sit modem_ml_svc_sit file b/360060992
 mtectrl unlabeled dir b/264483752
 pixelstats_vendor block_device dir b/369540673
 pixelstats_vendor block_device dir b/369540836
+platform_app radio_vendor_data_file dir b/380756119
 platform_app vendor_fw_file dir b/372121912
 platform_app vendor_rild_prop file b/372121912
 priv_app audio_config_prop file b/379246064
