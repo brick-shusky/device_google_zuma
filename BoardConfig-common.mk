@@ -39,9 +39,15 @@ BOARD_KERNEL_CMDLINE += swiotlb=1024
 BOARD_KERNEL_CMDLINE += cgroup.memory=nokmem
 BOARD_KERNEL_CMDLINE += sysctl.kernel.sched_pelt_multiplier=4
 
+# Normal (non-_fullmte) builds should disable kasan
 ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
-ifneq (,$(filter eng,$(TARGET_BUILD_VARIANT)))
 BOARD_KERNEL_CMDLINE += kasan=off
+endif
+
+# Enable a limited subset of MTE for "normal" (non-_fullmte) eng builds.
+# Don't touch any settings for _fullmte builds. They are set somewhere else.
+ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
+ifeq ($(TARGET_BUILD_VARIANT),eng)
 BOARD_KERNEL_CMDLINE += bootloader.pixel.MTE_FORCE_ON
 ifeq ($(filter memtag_heap,$(SANITIZE_TARGET)),)
 SANITIZE_TARGET := $(strip $(SANITIZE_TARGET) memtag_heap)
