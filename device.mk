@@ -80,9 +80,9 @@ PRODUCT_SOONG_NAMESPACES += \
 	device/google/zuma \
 	device/google/zuma/powerstats \
 	vendor/google_devices/common/chre/host/hal \
+	vendor/google_devices/zuma/proprietary/debugpolicy \
 	vendor/google/whitechapel/tools \
 	vendor/google/interfaces \
-	vendor/google_devices/common/proprietary/confirmatioui_hal \
 	vendor/google_nos/host/android \
 	vendor/google_nos/test/system-test-harness \
 	vendor/google/camera
@@ -220,12 +220,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
 endif
 
 PRODUCT_PROPERTY_OVERRIDES += \
-	persist.sys.hdcp_checking=always
+	persist.sys.hdcp_checking=drm-only
 
 USE_LASSEN_OEMHOOK := true
 # The "power-anomaly-sitril" is added into PRODUCT_SOONG_NAMESPACES when
 # $(USE_LASSEN_OEMHOOK) is true and $(BOARD_WITHOUT_RADIO) is not true.
 ifneq ($(BOARD_WITHOUT_RADIO),true)
+    $(call soong_config_set,sitril,use_lassen_oemhook_with_radio,true)
     PRODUCT_SOONG_NAMESPACES += vendor/google/tools/power-anomaly-sitril
 endif
 
@@ -236,6 +237,8 @@ $(call soong_config_set, vendor_ril_google_feature, use_lassen_modem, true)
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
 USE_GOOGLE_CARRIER_SETTINGS := true
+# GoogleDialer in PDK build with "USES_GOOGLE_DIALER_CARRIER_SETTINGS=true"
+PRODUCT_SOONG_NAMESPACES += vendor/google_devices/zuma/proprietary/GoogleDialer
 endif
 
 ifeq ($(USES_GOOGLE_PREBUILT_MODEM_SVC),true)
@@ -254,8 +257,15 @@ USE_SWIFTSHADER := false
 # HWUI
 TARGET_USES_VULKAN = true
 
+# "vendor/arm" doesn't exist in PDK build
+ifeq (,$(realpath $(TOPDIR)vendor/arm/mali/valhall/Android.bp))
+PRODUCT_SOONG_NAMESPACES += \
+	vendor/google_devices/zuma/prebuilts/firmware/gpu \
+	vendor/google_devices/zuma/prebuilts/gpu
+else
 PRODUCT_SOONG_NAMESPACES += \
 	vendor/arm/mali/valhall
+endif
 
 $(call soong_config_set,pixel_mali,soc,$(TARGET_BOARD_PLATFORM))
 $(call soong_config_set,arm_gralloc,soc,$(TARGET_BOARD_PLATFORM))
@@ -265,8 +275,17 @@ PRODUCT_PACKAGES += \
 	csffw_image_prebuilt__firmware_prebuilt_ttux_mali_csffw.bin \
 	libGLES_mali \
 	vulkan.mali \
-	libOpenCL \
 	libgpudataproducer
+
+# Install the OpenCL ICD Loader
+PRODUCT_SOONG_NAMESPACES += external/OpenCL-ICD-Loader
+PRODUCT_PACKAGES += \
+       libOpenCL \
+       mali_icd__customer_pixel_opencl-icd_ARM.icd
+ifeq ($(DEVICE_IS_64BIT_ONLY),false)
+PRODUCT_PACKAGES += \
+	mali_icd__customer_pixel_opencl-icd_ARM32.icd
+endif
 
 ifeq ($(USE_SWIFTSHADER),true)
 PRODUCT_PACKAGES += \
@@ -285,11 +304,10 @@ PRODUCT_VENDOR_PROPERTIES += \
 endif
 
 # Mali Configuration Properties
-# b/221255664 prevents setting PROTECTED_MAX_CORE_COUNT=2
 PRODUCT_VENDOR_PROPERTIES += \
 	vendor.mali.platform.config=/vendor/etc/mali/platform.config \
 	vendor.mali.debug.config=/vendor/etc/mali/debug.config \
-	vendor.mali.base_protected_max_core_count=1 \
+	vendor.mali.base_protected_max_core_count=4 \
 	vendor.mali.base_protected_tls_max=67108864 \
 	vendor.mali.platform_agt_frequency_khz=24576
 
@@ -322,6 +340,7 @@ PRODUCT_VENDOR_PROPERTIES += ro.surface_flinger.prime_shader_cache.ultrahdr=1
 DEVICE_MANIFEST_FILE := \
 	device/google/zuma/manifest.xml
 
+BOARD_USE_CODEC2_AIDL := V1
 ifneq (,$(filter aosp_%,$(TARGET_PRODUCT)))
 DEVICE_MANIFEST_FILE += \
 	device/google/zuma/manifest_media_aosp.xml
@@ -381,6 +400,14 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.freq.userdebug.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.freq.userdebug.rc
 endif
 
+ifneq (,$(filter 5.%, $(TARGET_LINUX_KERNEL_VERSION)))
+PRODUCT_COPY_FILES += \
+	device/google/zuma/storage/5.15/init.zuma.storage.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.storage.rc
+else
+PRODUCT_COPY_FILES += \
+	device/google/zuma/storage/6.1/init.zuma.storage.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.zuma.storage.rc
+endif
+
 # Recovery files
 PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.recovery.device.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.zuma.rc
@@ -437,8 +464,6 @@ PRODUCT_COPY_FILES += \
 ## Enable the CHRE Daemon
 CHRE_USF_DAEMON_ENABLED := false
 CHRE_DEDICATED_TRANSPORT_CHANNEL_ENABLED := true
-PRODUCT_PACKAGES += \
-	preloaded_nanoapps.json
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
@@ -556,6 +581,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.mmap_exclusive_policy=2
 PRODUCT_PROPERTY_OVERRIDES += aaudio.hw_burst_min_usec=2000
+
+# Set util_clamp_min for s/w spatializer
+PRODUCT_PROPERTY_OVERRIDES += audio.spatializer.effect.util_clamp_min=300
 
 # Calliope firmware overwrite
 #PRODUCT_COPY_FILES += \
@@ -810,11 +838,18 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/media_codecs_performance_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance_c2.xml \
 
 PRODUCT_PROPERTY_OVERRIDES += \
-       debug.stagefright.c2-poolmask=458752 \
        debug.c2.use_dmabufheaps=1 \
        media.c2.dmabuf.padding=512 \
        debug.stagefright.ccodec_delayed_params=1 \
        ro.vendor.gpu.dataspace=1
+
+ifneq ($(BOARD_USE_CODEC2_AIDL), )
+PRODUCT_PROPERTY_OVERRIDES += \
+        debug.stagefright.c2-poolmask=1507328
+else
+PRODUCT_PROPERTY_OVERRIDES += \
+        debug.stagefright.c2-poolmask=458752
+endif
 
 # Create input surface on the framework side
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -860,8 +895,6 @@ PRODUCT_PACKAGES_DEBUG += \
    tipc-test \
    trusty_stats_test \
    trusty-coverage-controller \
-
-include device/google/gs101/confirmationui/confirmationui.mk
 
 # Trusty Metrics Daemon
 PRODUCT_SOONG_NAMESPACES += \
