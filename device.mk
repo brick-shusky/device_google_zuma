@@ -31,7 +31,7 @@ include device/google/gs-common/pixel_metrics/pixel_metrics.mk
 include device/google/gs-common/soc/freq.mk
 include device/google/gs-common/gps/dump/log.mk
 include device/google/gs-common/bcmbt/dump/dumplog.mk
-include device/google/gs-common/display/dump.mk
+include device/google/gs-common/display/dump_exynos_display.mk
 include device/google/gs-common/display_logbuffer/dump.mk
 include device/google/gs-common/gxp/gxp.mk
 include device/google/gs-common/camera/dump.mk
@@ -44,6 +44,7 @@ include device/google/gs-common/misc_writer/misc_writer.mk
 include device/google/gs-common/gyotaku_app/gyotaku.mk
 include device/google/gs-common/bootctrl/bootctrl_aidl.mk
 include device/google/gs-common/betterbug/betterbug.mk
+include device/google/gs-common/recorder/recorder.mk
 include device/google/gs-common/fingerprint/fingerprint.mk
 
 include device/google/zuma/dumpstate/item.mk
@@ -75,6 +76,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	hardware/google/gchips/gralloc4 \
 	hardware/google/graphics/common \
 	hardware/google/graphics/zuma \
+	hardware/google/graphics/zuma/libhwc2.1 \
 	hardware/google/interfaces \
 	hardware/google/pixel \
 	device/google/zuma \
@@ -233,6 +235,9 @@ endif
 # Use for GRIL
 USES_LASSEN_MODEM := true
 $(call soong_config_set, vendor_ril_google_feature, use_lassen_modem, true)
+ifneq ($(BOARD_WITHOUT_RADIO),true)
+$(call soong_config_set_bool,grilservice,use_google_qns,true)
+endif
 
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
@@ -1019,7 +1024,7 @@ ifneq ($(BOARD_WITHOUT_RADIO),true)
 SHARED_MODEM_PLATFORM_VENDOR := lassen
 
 # Shared Modem Platform
-include device/google/gs-common/modem/shared_modem_platform/shared_modem_platform.mk
+include device/google/gs-common/modem/modem_svc_sit/shared_modem_platform.mk
 
 # modem_ml_svc_sit daemon
 PRODUCT_PACKAGES += modem_ml_svc_sit

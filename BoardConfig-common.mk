@@ -39,9 +39,15 @@ BOARD_KERNEL_CMDLINE += swiotlb=1024
 BOARD_KERNEL_CMDLINE += cgroup.memory=nokmem
 BOARD_KERNEL_CMDLINE += sysctl.kernel.sched_pelt_multiplier=4
 
+# Normal (non-_fullmte) builds should disable kasan
 ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
-ifneq (,$(filter eng,$(TARGET_BUILD_VARIANT)))
 BOARD_KERNEL_CMDLINE += kasan=off
+endif
+
+# Enable a limited subset of MTE for "normal" (non-_fullmte) eng builds.
+# Don't touch any settings for _fullmte builds. They are set somewhere else.
+ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
+ifeq ($(TARGET_BUILD_VARIANT),eng)
 BOARD_KERNEL_CMDLINE += bootloader.pixel.MTE_FORCE_ON
 ifeq ($(filter memtag_heap,$(SANITIZE_TARGET)),)
 SANITIZE_TARGET := $(strip $(SANITIZE_TARGET) memtag_heap)
@@ -72,7 +78,7 @@ TARGET_RECOVERY_FSTAB_GENRULE := gen_fstab.zuma-sw-encrypt
 TARGET_RECOVERY_PIXEL_FORMAT := ABGR_8888
 TARGET_RECOVERY_UI_MARGIN_HEIGHT := 165
 TARGET_RECOVERY_UI_LIB := \
-	librecovery_ui_pixel \
+	//hardware/google/pixel/recovery:librecovery_ui_pixel \
 	libfstab
 
 AB_OTA_UPDATER := true
@@ -213,6 +219,17 @@ BOARD_USE_BLOB_ALLOCATOR := false
 BOARD_SUPPORT_MFC_ENC_BT2020 := true
 BOARD_SUPPORT_FLEXIBLE_P010 := true
 BOARD_SUPPORT_MFC_VERSION := 1660
+$(call soong_config_set,video_codec,target_soc_name,$(TARGET_SOC_NAME))
+$(call soong_config_set_bool,video_codec,board_use_codec2_hidl_1_2,$(BOARD_USE_CODEC2_HIDL_1_2))
+$(call soong_config_set_bool,video_codec,board_use_csc_filter,$(BOARD_USE_CSC_FILTER))
+$(call soong_config_set_bool,video_codec,board_use_dec_sw_csc,$(BOARD_USE_DEC_SW_CSC))
+$(call soong_config_set_bool,video_codec,board_use_enc_sw_csc,$(BOARD_USE_ENC_SW_CSC))
+$(call soong_config_set_bool,video_codec,board_support_mfc_enc_rgb,$(BOARD_SUPPORT_MFC_ENC_RGB))
+$(call soong_config_set_bool,video_codec,board_use_blob_allocator,$(BOARD_USE_BLOB_ALLOCATOR))
+$(call soong_config_set_bool,video_codec,board_support_mfc_enc_bt2020,$(BOARD_SUPPORT_MFC_ENC_BT2020))
+$(call soong_config_set_bool,video_codec,board_support_flexible_p010,$(BOARD_SUPPORT_FLEXIBLE_P010))
+$(call soong_config_set_bool,video_codec,board_use_codec2_aidl,$(if $(BOARD_USE_CODEC2_AIDL),true,false))
+$(call soong_config_set,video_codec,board_support_mfc_version,$(BOARD_SUPPORT_MFC_VERSION))
 ########################
 
 BOARD_SUPER_PARTITION_SIZE := 8531214336
