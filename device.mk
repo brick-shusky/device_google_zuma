@@ -221,6 +221,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.vendor.usb.displayport.enabled=1
 endif
 
+# Enable Settings 2-pane optimization for devices supporting display ports.
+PRODUCT_SYSTEM_PROPERTIES += \
+        persist.settings.large_screen_opt_for_dp.enabled=true
+
 PRODUCT_PROPERTY_OVERRIDES += \
 	persist.sys.hdcp_checking=drm-only
 
