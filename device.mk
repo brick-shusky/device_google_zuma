@@ -46,7 +46,6 @@ include device/google/gs-common/bootctrl/bootctrl_aidl.mk
 include device/google/gs-common/betterbug/betterbug.mk
 include device/google/gs-common/recorder/recorder.mk
 include device/google/gs-common/fingerprint/fingerprint.mk
-include device/google/gs-common/16kb/16kb.mk
 
 include device/google/zuma/dumpstate/item.mk
 
@@ -396,6 +395,7 @@ PRODUCT_COPY_FILES += \
 	device/google/zuma/conf/init.efs.16k.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.efs.rc \
 	device/google/$(TARGET_BOARD_PLATFORM)/conf/fstab.efs.from_data:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.efs.from_data \
 
+PRODUCT_PACKAGES += copy_efs_files_to_data
 PRODUCT_PACKAGES += fsck.f2fs.vendor
 else
 PRODUCT_COPY_FILES += \
