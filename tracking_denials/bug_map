@@ -29,7 +29,6 @@ priv_app audio_config_prop file b/379246064
 radio audio_config_prop file b/379245771
 ramdump ramdump capability b/369475700
 ramdump_app default_prop file b/386149375
-ramdump_app privapp_data_file lnk_file b/385858590
 shell sysfs_net file b/330081782
 ssr_detector_app default_prop file b/340722729
 system_server sysfs_batteryinfo file b/294967729
