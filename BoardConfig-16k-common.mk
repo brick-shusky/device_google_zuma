@@ -36,7 +36,6 @@ BOARD_KERNEL_MODULES_16K := $(filter-out %/aoc_unit_test_dev.ko,$(BOARD_KERNEL_M
 BOARD_KERNEL_MODULES_16K := $(filter-out %/bcm_dbg.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/gnssif.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/gnss_spi.ko,$(BOARD_KERNEL_MODULES_16K))
-BOARD_KERNEL_MODULES_16K := $(filter-out %/goodix_brl_touch.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/mali_kutf.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/mali_kutf_clk_rate_trace_test_portal.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/rt6160_regulator.ko,$(BOARD_KERNEL_MODULES_16K))
