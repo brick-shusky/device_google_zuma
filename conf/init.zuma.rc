@@ -283,6 +283,11 @@ on late-fs
     # Mount RW partitions which need run fsck
     mount_all --late
 
+on late-init
+    write /sys/devices/system/cpu/cpu0/cpufreq/sched_pixel/down_rate_limit_us 5000
+    write /sys/devices/system/cpu/cpu4/cpufreq/sched_pixel/down_rate_limit_us 20000
+    write /sys/devices/system/cpu/cpu8/cpufreq/sched_pixel/down_rate_limit_us 20000
+
 on post-fs-data
     # Modem temperature driver
     chown radio system /sys/devices/platform/cp-tm1/cp_temp
