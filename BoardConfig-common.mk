@@ -17,7 +17,9 @@ include build/make/target/board/BoardConfigMainlineCommon.mk
 include build/make/target/board/BoardConfigPixelCommon.mk
 
 # Include settings for 16k developer option, if enabled
+ifneq ($(wildcard $(TARGET_KERNEL_DIR)/16kb/),)
 include device/google/zuma/BoardConfig-16k-common.mk
+endif
 
 # HACK : To fix up after bring up multimedia devices.
 TARGET_SOC := zuma
@@ -33,7 +35,6 @@ TARGET_CPU_VARIANT := cortex-a55
 
 BOARD_KERNEL_CMDLINE += earlycon=exynos4210,0x10870000 console=ttySAC0,115200 androidboot.console=ttySAC0 printk.devkmsg=on
 BOARD_KERNEL_CMDLINE += cma_sysfs.experimental=Y
-BOARD_KERNEL_CMDLINE += cgroup_disable=memory
 BOARD_KERNEL_CMDLINE += rcupdate.rcu_expedited=1 rcu_nocbs=all rcutree.enable_rcu_lazy
 BOARD_KERNEL_CMDLINE += swiotlb=1024
 BOARD_KERNEL_CMDLINE += cgroup.memory=nokmem

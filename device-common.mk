@@ -61,6 +61,9 @@ PRODUCT_PRODUCT_PROPERTIES += persist.arm64.memtag.app.com.android.se=off
 PRODUCT_PRODUCT_PROPERTIES += persist.arm64.memtag.app.com.google.android.bluetooth=off
 PRODUCT_PRODUCT_PROPERTIES += persist.arm64.memtag.app.com.android.nfc=off
 PRODUCT_PRODUCT_PROPERTIES += persist.arm64.memtag.system_server=off
+# Also enable the system property that would turn on MTE when Android Advanced
+# Protection Mode is turned on.
+PRODUCT_PRODUCT_PROPERTIES += ro.arm64.memtag.bootctl_device_policy_manager=true
 endif
 endif
 
