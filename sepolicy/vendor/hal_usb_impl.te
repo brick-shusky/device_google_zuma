@@ -20,7 +20,7 @@ hal_client_domain(hal_usb_impl, hal_thermal);
 # For monitoring usb sysfs attributes
 allow hal_usb_impl sysfs_wakeup:dir search;
 allow hal_usb_impl sysfs_wakeup:file r_file_perms;
-is_flag_enabled(RELEASE_USB_UDC_SYSFS_SELINUX_POLICY_ENABLED, `
+starting_at_board_api(202504, `
 allow hal_usb_impl sysfs_udc:file r_file_perms;
 ')
 

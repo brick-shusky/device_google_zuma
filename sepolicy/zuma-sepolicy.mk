@@ -6,7 +6,7 @@ BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/googlebattery
 
 # sepolicy that are shared among devices using zuma
 BOARD_SEPOLICY_DIRS += device/google/zuma/sepolicy/vendor
-BOARD_SEPOLICY_DIRS += device/google/zuma/sepolicy/radio
+BOARD_VENDOR_SEPOLICY_DIRS += device/google/zuma/sepolicy/radio
 PRODUCT_PRIVATE_SEPOLICY_DIRS += device/google/zuma/sepolicy/radio/private
 
 # unresolved SELinux error log with bug tracking
