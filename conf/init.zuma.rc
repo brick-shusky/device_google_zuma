@@ -102,6 +102,83 @@ on init
 
     start vendor.keymaster-4-0
 
+    # Change permission of sched qos nodes
+    chown system system /proc/vendor_sched/sched_qos/adpf_set
+    chown system system /proc/vendor_sched/sched_qos/adpf_clear
+    chown system system /proc/vendor_sched/sched_qos/auto_uclamp_max_set
+    chown system system /proc/vendor_sched/sched_qos/auto_uclamp_max_clear
+    chown system system /proc/vendor_sched/sched_qos/boost_prio_set
+    chown system system /proc/vendor_sched/sched_qos/boost_prio_clear
+    chown system system /proc/vendor_sched/sched_qos/preempt_wakeup_set
+    chown system system /proc/vendor_sched/sched_qos/preempt_wakeup_clear
+    chown system system /proc/vendor_sched/sched_qos/prefer_fit_set
+    chown system system /proc/vendor_sched/sched_qos/prefer_fit_clear
+    chown system system /proc/vendor_sched/sched_qos/prefer_high_cap_set
+    chown system system /proc/vendor_sched/sched_qos/prefer_high_cap_clear
+    chown system system /proc/vendor_sched/sched_qos/prefer_idle_set
+    chown system system /proc/vendor_sched/sched_qos/prefer_idle_clear
+    chown system system /proc/vendor_sched/sched_qos/rampup_multiplier_set
+    chown system system /proc/vendor_sched/sched_qos/rampup_multiplier_clear
+
+    chmod 0220 /proc/vendor_sched/sched_qos/adpf_set
+    chmod 0220 /proc/vendor_sched/sched_qos/adpf_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/auto_uclamp_max_set
+    chmod 0220 /proc/vendor_sched/sched_qos/auto_uclamp_max_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/boost_prio_set
+    chmod 0220 /proc/vendor_sched/sched_qos/boost_prio_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/preempt_wakeup_set
+    chmod 0220 /proc/vendor_sched/sched_qos/preempt_wakeup_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_fit_set
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_fit_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_high_cap_set
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_high_cap_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_idle_set
+    chmod 0220 /proc/vendor_sched/sched_qos/prefer_idle_clear
+    chmod 0220 /proc/vendor_sched/sched_qos/rampup_multiplier_set
+    chmod 0220 /proc/vendor_sched/sched_qos/rampup_multiplier_clear
+
+    # Enable sched_qos for some groups
+    write /proc/vendor_sched/groups/ta/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/ta/qos_auto_uclamp_max_enable 1
+    write /proc/vendor_sched/groups/ta/qos_boost_prio_enable 1
+    write /proc/vendor_sched/groups/ta/qos_preempt_wakeup_enable 1
+    write /proc/vendor_sched/groups/ta/qos_prefer_fit_enable 1
+    write /proc/vendor_sched/groups/ta/qos_prefer_high_cap_enable 1
+    write /proc/vendor_sched/groups/ta/qos_prefer_idle_enable 1
+    write /proc/vendor_sched/groups/ta/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/fg/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/fg/qos_auto_uclamp_max_enable 1
+    write /proc/vendor_sched/groups/fg/qos_boost_prio_enable 1
+    write /proc/vendor_sched/groups/fg/qos_preempt_wakeup_enable 1
+    write /proc/vendor_sched/groups/fg/qos_prefer_fit_enable 1
+    write /proc/vendor_sched/groups/fg/qos_prefer_high_cap_enable 1
+    write /proc/vendor_sched/groups/fg/qos_prefer_idle_enable 1
+    write /proc/vendor_sched/groups/fg/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_auto_uclamp_max_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_boost_prio_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_preempt_wakeup_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_prefer_fit_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_prefer_high_cap_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_prefer_idle_enable 1
+    write /proc/vendor_sched/groups/fg_wi/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/cam/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/cam/qos_auto_uclamp_max_enable 1
+    write /proc/vendor_sched/groups/cam/qos_prefer_fit_enable 1
+    write /proc/vendor_sched/groups/cam/qos_prefer_high_cap_enable 1
+    write /proc/vendor_sched/groups/cam/qos_prefer_idle_enable 1
+    write /proc/vendor_sched/groups/cam/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_auto_uclamp_max_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_prefer_fit_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_prefer_high_cap_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_prefer_idle_enable 1
+    write /proc/vendor_sched/groups/cam_power/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/rt/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/rt/qos_rampup_multiplier_enable 1
+    write /proc/vendor_sched/groups/sf/qos_adpf_enable 1
+    write /proc/vendor_sched/groups/sf/qos_rampup_multiplier_enable 1
+
     # ZRAM setup
     write /proc/sys/vm/page-cluster 0
 
@@ -150,14 +227,11 @@ on init
     # governor setting
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor sched_pixel
     write /sys/devices/system/cpu/cpu0/cpufreq/sched_pixel/up_rate_limit_us 500
-    write /sys/devices/system/cpu/cpu0/cpufreq/sched_pixel/down_rate_limit_us 5000
     write /sys/devices/system/cpu/cpu0/cpufreq/sched_pixel/down_rate_limit_scale_pow 2
     write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor sched_pixel
     write /sys/devices/system/cpu/cpu4/cpufreq/sched_pixel/up_rate_limit_us 500
-    write /sys/devices/system/cpu/cpu4/cpufreq/sched_pixel/down_rate_limit_us 20000
     write /sys/devices/system/cpu/cpu8/cpufreq/scaling_governor sched_pixel
     write /sys/devices/system/cpu/cpu8/cpufreq/sched_pixel/up_rate_limit_us 500
-    write /sys/devices/system/cpu/cpu8/cpufreq/sched_pixel/down_rate_limit_us 20000
 
 
     # memlat cpuidle awareness setting
@@ -374,6 +448,11 @@ on late-fs
     # Mount RW partitions which need run fsck
     mount_all --late
 
+on late-init
+    write /sys/devices/system/cpu/cpu0/cpufreq/sched_pixel/down_rate_limit_us 5000
+    write /sys/devices/system/cpu/cpu4/cpufreq/sched_pixel/down_rate_limit_us 20000
+    write /sys/devices/system/cpu/cpu8/cpufreq/sched_pixel/down_rate_limit_us 20000
+
 on post-fs-data
     # Modem temperature driver
     chown radio system /sys/devices/platform/cp-tm1/cp_temp
@@ -532,9 +611,9 @@ on early-boot
     chown system system /dev/logbuffer_usbpd
     chown system system /dev/logbuffer_wireless
     chown system system /dev/logbuffer_pca9468
+    chown system system /dev/logbuffer_dc_mains
     chown system system /dev/logbuffer_cpm
     chown system system /dev/logbuffer_wc68
-    chown system system /dev/logbuffer_ln8411
     chown system system /dev/logbuffer_pcie0
     chown system system /dev/logbuffer_pcie1
     chown system system /dev/logbuffer_bd
@@ -982,7 +1061,7 @@ on property:vendor.thermal.link_ready=1
     write /sys/devices/virtual/pmic/mitigation/triggered_lvl/soft_ocp_gpu_lvl 9000
     write /sys/devices/virtual/pmic/mitigation/triggered_lvl/soft_ocp_tpu_lvl 8500
     write /sys/devices/virtual/pmic/mitigation/triggered_lvl/ocp_cpu2_lvl 12000
-    write /sys/devices/virtual/pmic/mitigation/triggered_lvl/ocp_gpu_lvl 12000
+    write /sys/devices/virtual/pmic/mitigation/triggered_lvl/ocp_gpu_lvl 9000
     write /sys/devices/virtual/pmic/mitigation/triggered_lvl/ocp_tpu_lvl 12000
     write /sys/devices/virtual/pmic/mitigation/clock_div/tpu_clk_div 0x1
     write /sys/devices/virtual/pmic/mitigation/clock_div/gpu_clk_div 0x1

@@ -75,6 +75,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	hardware/google/gchips/gralloc4 \
 	hardware/google/graphics/common \
 	hardware/google/graphics/zuma \
+	hardware/google/graphics/zuma/libhwc2.1 \
 	hardware/google/interfaces \
 	hardware/google/pixel \
 	device/google/zuma \
@@ -95,11 +96,6 @@ TRUSTY_KEYMINT_IMPL := rust
 ifeq ($(RELEASE_AVF_ENABLE_LLPVM_CHANGES),true)
 	# Set the environment variable to enable the Secretkeeper HAL service.
 	SECRETKEEPER_ENABLED := true
-	# TODO(b/341708664): Enable Secretkeeper unconditionally once AOSP targets are built with
-	# compatible bootloader (24Q3+).
-	ifneq (,$(filter aosp_%,$(TARGET_PRODUCT)))
-		SECRETKEEPER_ENABLED := false
-	endif
 endif
 
 # OEM Unlock reporting
@@ -191,7 +187,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
 	bluetooth.profile.asha.central.enabled?=true \
 	bluetooth.profile.a2dp.source.enabled?=true \
 	bluetooth.profile.avrcp.target.enabled?=true \
-	bluetooth.profile.bap.unicast.server.enabled?=true \
+	bluetooth.profile.bap.unicast.client.enabled?=true \
 	bluetooth.profile.bas.client.enabled?=true \
 	bluetooth.profile.csip.set_coordinator.enabled?=true \
 	bluetooth.profile.gatt.enabled?=true \
@@ -206,8 +202,8 @@ PRODUCT_PRODUCT_PROPERTIES += \
 	bluetooth.profile.pan.panu.enabled?=true \
 	bluetooth.profile.pbap.server.enabled?=true \
 	bluetooth.profile.sap.server.enabled?=true \
-	bluetooth.profile.tbs.server.enabled?=true \
-	bluetooth.profile.vc.server.enabled?=true
+	bluetooth.profile.ccp.server.enabled?=true \
+	bluetooth.profile.vcp.controller.enabled?=true
 
 # Carrier configuration default location
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -238,6 +234,9 @@ endif
 # Use for GRIL
 USES_LASSEN_MODEM := true
 $(call soong_config_set, vendor_ril_google_feature, use_lassen_modem, true)
+ifneq ($(BOARD_WITHOUT_RADIO),true)
+$(call soong_config_set_bool,grilservice,use_google_qns,true)
+endif
 
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
@@ -1017,8 +1016,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
 
 ifneq ($(BOARD_WITHOUT_RADIO),true)
-# modem_svc_sit daemon
-PRODUCT_PACKAGES += modem_svc_sit
+
+# Use Lassen specifc Shared Modem Platform
+SHARED_MODEM_PLATFORM_VENDOR := lassen
+
+# Shared Modem Platform
+include device/google/gs-common/modem/modem_svc_sit/shared_modem_platform.mk
 
 # modem_ml_svc_sit daemon
 PRODUCT_PACKAGES += modem_ml_svc_sit
@@ -1158,7 +1161,7 @@ PRODUCT_SOONG_NAMESPACES += \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/nnapi_stable_aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/aidl \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/hal \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/api \
+	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/tachyon_apis \
 	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/service
 # TPU firmware
 PRODUCT_PACKAGES += edgetpu-rio.fw

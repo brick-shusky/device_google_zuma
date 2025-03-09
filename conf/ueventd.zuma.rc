@@ -97,6 +97,7 @@
 /dev/acd-mel_processor          0660   system     audio
 /dev/amcs                       0660   system     audio
 /dev/acd-audio_rtp_*            0660   system     radio
+/dev/acd-mc_headpos             0660   system     audio
 
 # Secure MEM driver
 /dev/s5p-smem             0660   drm        drmrpc
@@ -154,6 +155,11 @@
 # CHRE (USF)
 /dev/acd-com.google.chre              0660   system     system
 /dev/acd-com.google.chre.non_wake_up  0660   system     system
+
+# CHRE (EFW transport)
+/dev/acd-chre_ctl       	0660   system   system
+/dev/acd-chre_data_tx   	0220   system   system
+/dev/acd-chre_data_rx   	0440   system   system
 
 # BT
 /dev/acd-com.google.bt  		          0660   system     system

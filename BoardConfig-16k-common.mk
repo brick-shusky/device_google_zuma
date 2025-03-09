@@ -31,8 +31,17 @@ BOARD_KERNEL_MODULES_16K += $(file < $(TARGET_KERNEL_DIR_16K)/vendor_dlkm.module
 BOARD_KERNEL_MODULES_16K := $(foreach module,$(BOARD_KERNEL_MODULES_16K),$(TARGET_KERNEL_DIR_16K)/$(notdir $(module)))
 BOARD_PREBUILT_DTBOIMAGE_16KB := $(TARGET_KERNEL_DIR_16K)/dtbo.img
 
-# Zuma targets use exynos-bcm_dbg.ko module instead of bcm_dbg.ko.
+# The 16kb mode does not use these modules.
+BOARD_KERNEL_MODULES_16K := $(filter-out %/aoc_unit_test_dev.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/bcm_dbg.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/gnssif.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/gnss_spi.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/mali_kutf.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/mali_kutf_clk_rate_trace_test_portal.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/rt6160_regulator.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/sec_touch.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/sscoredump_sample_test.ko,$(BOARD_KERNEL_MODULES_16K))
+BOARD_KERNEL_MODULES_16K := $(filter-out %/sscoredump_test.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_16K := $(filter-out %/zram.ko,$(BOARD_KERNEL_MODULES_16K))
 BOARD_KERNEL_MODULES_LOAD_16K := $(foreach module,$(BOARD_KERNEL_MODULES_16K),$(notdir $(module)))
 
