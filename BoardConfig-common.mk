@@ -45,17 +45,6 @@ ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
 BOARD_KERNEL_CMDLINE += kasan=off
 endif
 
-# Enable a limited subset of MTE for "normal" (non-_fullmte) eng builds.
-# Don't touch any settings for _fullmte builds. They are set somewhere else.
-ifeq (,$(filter %_fullmte,$(TARGET_PRODUCT)))
-ifeq ($(TARGET_BUILD_VARIANT),eng)
-BOARD_KERNEL_CMDLINE += bootloader.pixel.MTE_FORCE_ON
-ifeq ($(filter memtag_heap,$(SANITIZE_TARGET)),)
-SANITIZE_TARGET := $(strip $(SANITIZE_TARGET) memtag_heap)
-endif
-endif
-endif
-
 BOARD_BOOTCONFIG += androidboot.boot_devices=13200000.ufs
 
 TARGET_NO_BOOTLOADER := true
@@ -261,12 +250,6 @@ BOARD_PERFSETUP_SCRIPT := platform_testing/scripts/perf-setup/p23-setup.sh
 BOARD_USES_GENERIC_AUDIO := true
 
 $(call soong_config_set,aoc_audio_func,ext_hidl,true)
-
-ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
-$(call soong_config_set,aoc_audio_func,dump_usecase_data,true)
-$(call soong_config_set,aoc_audio_func,hal_socket_control,true)
-$(call soong_config_set,aoc_audio_func,record_tuning_keys,true)
-endif
 
 ifneq (,$(filter aosp_%,$(TARGET_PRODUCT)))
 $(call soong_config_set,aoc_audio_func,aosp_build,true)
