@@ -73,22 +73,10 @@ endif
 
 PRODUCT_SOONG_NAMESPACES += \
 	hardware/google/av \
-	hardware/google/gchips \
-	hardware/google/gchips/gralloc4 \
-	hardware/google/graphics/common \
-	hardware/google/graphics/zuma \
-	hardware/google/graphics/zuma/libhwc2.1 \
 	hardware/google/interfaces \
 	hardware/google/pixel \
 	device/google/zuma \
-	device/google/zuma/powerstats \
-	vendor/google_devices/common/chre/host/hal \
-	vendor/google_devices/zuma/proprietary/debugpolicy \
-	vendor/google/whitechapel/tools \
-	vendor/google/interfaces \
-	vendor/google_nos/host/android \
-	vendor/google_nos/test/system-test-harness \
-	vendor/google/camera
+	device/google/zuma/powerstats
 
 LOCAL_KERNEL := $(TARGET_KERNEL_DIR)/Image.lz4
 
@@ -103,10 +91,6 @@ endif
 # OEM Unlock reporting
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 	ro.oem_unlock_supported=1
-
-# Include vendor telephony soong namespace
-PRODUCT_SOONG_NAMESPACES += \
-	vendor/samsung_slsi/telephony/$(BOARD_USES_SHARED_VENDOR_TELEPHONY)
 
 # From system.property
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -196,7 +180,6 @@ USE_LASSEN_OEMHOOK := true
 # $(USE_LASSEN_OEMHOOK) is true and $(BOARD_WITHOUT_RADIO) is not true.
 ifneq ($(BOARD_WITHOUT_RADIO),true)
     $(call soong_config_set,sitril,use_lassen_oemhook_with_radio,true)
-    PRODUCT_SOONG_NAMESPACES += vendor/google/tools/power-anomaly-sitril
 endif
 
 # Use for GRIL
@@ -209,8 +192,6 @@ endif
 ifeq ($(USES_GOOGLE_DIALER_CARRIER_SETTINGS),true)
 USE_GOOGLE_DIALER := true
 USE_GOOGLE_CARRIER_SETTINGS := true
-# GoogleDialer in PDK build with "USES_GOOGLE_DIALER_CARRIER_SETTINGS=true"
-PRODUCT_SOONG_NAMESPACES += vendor/google_devices/zuma/proprietary/GoogleDialer
 endif
 
 ifeq ($(USES_GOOGLE_PREBUILT_MODEM_SVC),true)
@@ -228,16 +209,6 @@ USE_SWIFTSHADER := false
 
 # HWUI
 TARGET_USES_VULKAN = true
-
-# "vendor/arm" doesn't exist in PDK build
-ifeq (,$(realpath $(TOPDIR)vendor/arm/mali/valhall/Android.bp))
-PRODUCT_SOONG_NAMESPACES += \
-	vendor/google_devices/zuma/prebuilts/firmware/gpu \
-	vendor/google_devices/zuma/prebuilts/gpu
-else
-PRODUCT_SOONG_NAMESPACES += \
-	vendor/arm/mali/valhall
-endif
 
 $(call soong_config_set,pixel_mali,soc,$(TARGET_BOARD_PLATFORM))
 $(call soong_config_set,arm_gralloc,soc,$(TARGET_BOARD_PLATFORM))
@@ -335,9 +306,6 @@ DEVICE_PACKAGE_OVERLAYS += device/google/zuma/overlay
 
 # This device is shipped with 34 (Android U)
 PRODUCT_SHIPPING_API_LEVEL := 34
-
-# RKP VINTF
--include vendor/google_nos/host/android/hals/keymaster/aidl/strongbox/RemotelyProvisionedComponent-citadel.mk
 
 # Enforce the Product interface
 PRODUCT_PRODUCT_VNDK_VERSION := current
@@ -731,8 +699,6 @@ WIFI_PRIV_CMD_UPDATE_MBO_CELL_STATUS := enabled
 ####################################
 
 # Video
-PRODUCT_SOONG_NAMESPACES += vendor/google/media/bigwave
-
 $(call soong_config_set,bigw,soc,$(TARGET_BOARD_PLATFORM))
 
 PRODUCT_PACKAGES += \
@@ -809,9 +775,6 @@ $(call inherit-product, system/core/trusty/trusty-storage.mk)
 $(call inherit-product, system/core/trusty/trusty-base.mk)
 
 # Trusty Metrics Daemon
-PRODUCT_SOONG_NAMESPACES += \
-	vendor/google/trusty/common
-
 PRODUCT_PACKAGES += \
 	trusty_metricsd
 
@@ -871,9 +834,6 @@ PRODUCT_PACKAGES += \
 	calliope_iva.bin \
 	vts.bin
 
-# This will be called only if IMSService is building with source code for dev branches.
-$(call inherit-product-if-exists, vendor/samsung_slsi/telephony/$(BOARD_USES_SHARED_VENDOR_TELEPHONY)/shannon-ims/device-vendor.mk)
-
 PRODUCT_PACKAGES += ShannonIms
 
 PRODUCT_PACKAGES += ShannonRcs
@@ -893,18 +853,8 @@ USE_RADIO_HAL_2_1 := true
 # Using Early Send Device Info
 USE_EARLY_SEND_DEVICE_INFO := true
 
-#$(call inherit-product, vendor/google_devices/telephony/common/device-vendor.mk)
-#$(call inherit-product, vendor/google_devices/zuma/proprietary/device-vendor.mk)
-
-ifneq ($(BOARD_WITHOUT_RADIO),true)
-$(call inherit-product-if-exists, vendor/samsung_slsi/telephony/$(BOARD_USES_SHARED_VENDOR_TELEPHONY)/common/device-vendor.mk)
-endif
-
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
-#$(call inherit-product, hardware/google_devices/exynos5/exynos5.mk)
-#$(call inherit-product-if-exists, hardware/google_devices/zuma/zuma.mk)
-#$(call inherit-product-if-exists, vendor/google_devices/common/exynos-vendor.mk)
-#$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4375/device-bcm.mk)
+
 include device/google/gs-common/sensors/sensors.mk
 $(call soong_config_set,usf,target_soc,zuma)
 
@@ -981,9 +931,6 @@ include device/google/gs-common/audio/hidl_zuma.mk
 endif
 
 ## AoC soong
-PRODUCT_SOONG_NAMESPACES += \
-        vendor/google/whitechapel/aoc
-
 $(call soong_config_set,aoc,target_soc,$(TARGET_BOARD_PLATFORM))
 $(call soong_config_set,aoc,target_product,$(TARGET_PRODUCT))
 
@@ -1023,16 +970,7 @@ PRODUCT_PROPERTY_OVERRIDES += persist.vendor.enable.thermal.genl=true
 include device/google/gs-common/edgetpu/edgetpu.mk
 # Config variables for TPU chip on device.
 $(call soong_config_set,edgetpu_config,chip,rio)
-# Include the edgetpu targets defined the namespaces below into the final image.
-PRODUCT_SOONG_NAMESPACES += \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/metrics \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tflite_delegate \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/darwinn_logging_service \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/nnapi_stable_aidl \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/aidl \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/hal \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/tachyon_apis \
-	vendor/google_devices/zuma/proprietary/gchips/tpu/tachyon/service
+
 # TPU firmware
 PRODUCT_PACKAGES += edgetpu-rio.fw
 

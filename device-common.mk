@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
--include vendor/google_devices/zuma/proprietary/telephony/device-vendor.mk
 include device/google/zuma/device.mk
 
 # Telephony
