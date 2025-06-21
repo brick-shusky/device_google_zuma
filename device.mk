@@ -45,6 +45,7 @@ include device/google/gs-common/bootctrl/bootctrl_aidl.mk
 include device/google/gs-common/betterbug/betterbug.mk
 include device/google/gs-common/recorder/recorder.mk
 include device/google/gs-common/fingerprint/fingerprint.mk
+include device/google/gs-common/nfc/nfc.mk
 include device/google/gs-common/16kb/16kb.mk
 
 include device/google/zuma/dumpstate/item.mk
