@@ -1111,7 +1111,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 include hardware/google/pixel/HardwareInfo/HardwareInfo.mk
 
 # RIL extension service
-ifeq (,$(filter aosp_% factory_%,$(TARGET_PRODUCT)))
+ifeq (,$(filter aosp_%,$(TARGET_PRODUCT)))
 include device/google/gs-common/pixel_ril/ril.mk
 endif
 
