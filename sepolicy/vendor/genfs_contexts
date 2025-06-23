@@ -290,6 +290,8 @@ genfscon sysfs /devices/platform/odm/odm:btbcm/wakeup                           
 genfscon sysfs /devices/platform/19440000.drmdsim/19440000.drmdsim.0/wakeup/                                              u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/19450000.drmdsim/19450000.drmdsim.0/wakeup/                                              u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/110f0000.drmdp/wakeup                                                                    u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/odm/odm:fps_touch_handler/power/wakeup                                                   u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/odm/odm:fps_touch_handler/wakeup                                                         u:object_r:sysfs_wakeup:s0
 
 # Trusty
 genfscon sysfs /module/trusty_virtio/parameters/use_high_wq               u:object_r:sysfs_trusty:s0
@@ -333,9 +335,6 @@ genfscon sysfs /devices/platform/17000000.aoc/control/udfps_set_clock_source    
 genfscon sysfs /devices/platform/17000000.aoc/control/udfps_get_osc_freq        u:object_r:sysfs_aoc_udfps:s0
 genfscon sysfs /devices/platform/17000000.aoc/control/udfps_get_disp_freq       u:object_r:sysfs_aoc_udfps:s0
 genfscon sysfs /devices/platform/17000000.aoc/notify_timeout_aoc_status     u:object_r:sysfs_aoc_notifytimeout:s0
-
-# Faceauth
-genfscon sysfs /sys/kernel/vendor_mm/gcma_heap/trusty:faceauth_rawimage_heap/max_usage_kb u:object_r:sysfs_faceauth_rawimage_heap:s0
 
 # Bluetooth
 genfscon sysfs /devices/platform/155d0000.serial/uart_dbg                    u:object_r:sysfs_bt_uart:s0
