@@ -924,11 +924,7 @@ PRODUCT_PACKAGES += \
 
 # Audio
 # Audio HAL Server & Default Implementations
-ifeq ($(USE_AUDIO_HAL_AIDL),true)
 include device/google/gs-common/audio/aidl.mk
-else
-include device/google/gs-common/audio/hidl_zuma.mk
-endif
 
 ## AoC soong
 $(call soong_config_set,aoc,target_soc,$(TARGET_BOARD_PLATFORM))
